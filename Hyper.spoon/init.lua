@@ -24,12 +24,12 @@ function firstOrInsert(mappings, key)
     return mappings[key]
 end
 
-function hyper:mode(mode, mappings)
-    for target, action in pairs(mappings) do
-        firstOrInsert(hyperKeys, mode)
-        firstOrInsert(hyperKeys[mode], target)
-        firstOrInsert(hyperKeys[mode][target], self.appToMap)
-        hyperKeys[mode][target][self.appToMap] = action
+function hyper:action(action, mappings)
+    for target, closure in pairs(mappings) do
+        firstOrInsert(hyperKeys, action)
+        firstOrInsert(hyperKeys[action], target)
+        firstOrInsert(hyperKeys[action][target], self.appToMap)
+        hyperKeys[action][target][self.appToMap] = closure
     end
     return self
 end
@@ -43,9 +43,9 @@ function hyper:app(app)
 end
 
 hs.urlevent.bind('hyper', function(_, params)
-    command = hyperKeys[params.mode][params.target][frontApp()]
+    command = hyperKeys[params.action][params.target][frontApp()]
     if (command == nil) then
-        command = hyperKeys[params.mode][params.target]['default']
+        command = hyperKeys[params.action][params.target]['default']
     end
 
     if (command ~= nil) then
