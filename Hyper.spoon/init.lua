@@ -43,6 +43,13 @@ function hyper:app(app)
 end
 
 hs.urlevent.bind('hyper', function(_, params)
+    if (
+        not hyperKeys[params.action] or
+        not hyperKeys[params.action][params.target]
+    ) then
+        return
+    end
+
     command = hyperKeys[params.action][params.target][frontApp()]
     if (command == nil) then
         command = hyperKeys[params.action][params.target]['fallback']
